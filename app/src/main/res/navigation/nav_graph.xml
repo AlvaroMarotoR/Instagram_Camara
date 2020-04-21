@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentLogin">
+
+    <fragment
+        android:id="@+id/fragmentLogin"
+        android:name="com.example.insta.activities.FragmentLogin"
+        android:label="FragmentLogin">
+        <action
+            android:id="@+id/action_fragmentLogin_to_fragmentRegister2"
+            app:destination="@id/fragmentRegister"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+
+            />
+        <action
+            android:id="@+id/action_fragmentLogin_to_fragmentCamera"
+            app:destination="@id/fragmentCamera" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentRegister"
+        android:name="com.example.insta.activities.FragmentRegister"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/fragmentCamera"
+        android:name="com.example.insta.activities.FragmentCamera"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
+</navigation>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFF">
+
+    <Button
+        android:id="@+id/btnRegistroRegister"
+        android:layout_width="282dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/boton_con_relleno"
+        android:text="@string/register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="373dp"
+        android:layout_height="471dp"
+        android:background="@drawable/borde_layout_login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/txtregistro"
+                android:layout_width="335dp"
+                android:layout_height="61dp"
+                android:layout_marginStart="19dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="19dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:text="@string/txtLoginRegistrar"
+                android:textAllCaps="true"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/txtEmailRegister"
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:elevation="10dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/txtUsernameRegister"
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:elevation="10dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:hint="@string/txtUsername"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/txtNombreRegister"
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:elevation="10dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:hint="@string/txtNombre"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/txtApellido1Register"
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:elevation="10dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:hint="@string/txtApellido1"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/txtApellido2Register"
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:elevation="10dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:gravity="center"
+                android:hint="@string/txtApellido2"
+                android:inputType="textPersonName" />
+
+            <DatePicker
+                android:id="@+id/txtFechaRegister"
+                android:layout_width="282dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
+                android:elevation="10dp"
+                android:gravity="center"
+                android:spinnersShown="true" />
+
+            <RelativeLayout
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp"
+                android:background="@drawable/borde_edittext">
+
+                <TextView
+                    android:layout_width="141dp"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/txtGenero"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/txtGeneroRegister"
+                    android:layout_width="141dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp"
+                    android:background="@drawable/borde_edittext"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:gravity="center"
+                    android:prompt="@string/txtGenero"
+                    android:spinnerMode="dropdown" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/borde_edittext" />
+
+
+            <RelativeLayout
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="45dp">
+
+                <CheckBox
+                    android:id="@+id/btnVerPassword1"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginEnd="7dp"
+                    android:button="@drawable/ic_visibility" />
+
+                <EditText
+                    android:id="@+id/txtPasswordRegister"
+                    android:layout_width="247dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/borde_edittext"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:gravity="center_vertical"
+                    android:hint="@string/txtPassword"
+                    android:inputType="textPassword"
+                    android:paddingStart="10sp"
+                    android:paddingEnd="0sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="282dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="45dp">
+
+                <CheckBox
+                    android:id="@+id/btnVerPassword2"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginEnd="7dp"
+                    android:button="@drawable/ic_visibility" />
+
+                <EditText
+                    android:id="@+id/txtPasswordRegister2"
+                    android:layout_width="247dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/borde_edittext"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:gravity="center_vertical"
+                    android:hint="@string/txtPassword2"
+                    android:inputType="textPassword"
+                    android:paddingStart="10sp"
+                    android:paddingEnd="0sp" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="25dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
