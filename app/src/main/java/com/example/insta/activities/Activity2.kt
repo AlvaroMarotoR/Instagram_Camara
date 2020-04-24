@@ -15,6 +15,8 @@ class Activity2 : AppCompatActivity(){
         setContentView(R.layout.fragment_register)
         //val prefs = getSharedPreferences("user", Context.MODE_PRIVATE)
 
+        Log.d("camara","actividad 2")
+
         val cm = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true

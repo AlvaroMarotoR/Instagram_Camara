@@ -1,23 +1,39 @@
 package com.example.insta.activities
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Camera
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.insta.R
 import io.fotoapparat.Fotoapparat
+import io.fotoapparat.configuration.CameraConfiguration
+import io.fotoapparat.configuration.UpdateConfiguration
+import io.fotoapparat.log.fileLogger
 import io.fotoapparat.log.logcat
 import io.fotoapparat.log.loggers
 import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.back
+import io.fotoapparat.selector.front
+import io.fotoapparat.selector.off
+import io.fotoapparat.selector.torch
 import io.fotoapparat.view.CameraView
+import kotlinx.android.synthetic.main.fragment_camera.*
+import kotlinx.android.synthetic.main.fragment_camera.view.*
+import kotlinx.coroutines.newSingleThreadContext
 import java.io.File
+import java.net.URI
 
 
 /**
@@ -27,17 +43,60 @@ class FragmentCamera : Fragment() {
 
     //Array de permisos que pediremos al usuario (cámra, poder guardar y cargar archivos  en el teléfono)
     val permisos = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    var fotoapparat: Fotoapparat? = null
+    //Directorio de prueba
     val directorioSD = Environment.getExternalStorageDirectory()
+    //Destino de prueba
     val destino = File(directorioSD,"hola")
 
+    //VARIABLES QUE SE USAN EN LA LIBRERÍA FOTOAPPARAT
+    //Instanciamos el objeto FotoApparat
+    val fotoapparat =  Fotoapparat(
+        context = context!! ,
+        view = camera_view,                   // view which will draw the camera preview
+        scaleType = ScaleType.CenterCrop,    // (optional) we want the preview to fill the view
+        lensPosition = back(),               // (optional) we want back camera
+        cameraConfiguration = CameraConfiguration(), // (optional) define an advanced configuration
+        logger = loggers(                    // (optional) we want to log camera events in 2 places at once
+            logcat(),                   // ... in logcat
+            fileLogger(requireContext())            // ... and to file
+        ),
+        cameraErrorCallback = { error -> "Error tremendo" }   // (optional) log fatal errors
+    )
+
+
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+
+    ): View?  {
+        val pruebas = inflater.inflate(R.layout.fragment_camera, container, false);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+        return pruebas;
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+        fab_camera.setOnClickListener {
+            hacerFoto()
+        }
+
+        fab_switch_camera.setOnClickListener {
+            cambiarCamara()
+        }
+
+        fab_flash.setOnClickListener {
+            cambiarFlash()
+
+
+        }
+
+    }
+
+
 
 
 
@@ -60,20 +119,13 @@ class FragmentCamera : Fragment() {
         )
     }
 
-    //Función que "Crea" la cámara, isntanciandola con unos valores por defecto.
-    private fun crearFotoapparat(){
-        val cameraView = view!!.findViewById<CameraView>(R.id.camera_view)
-
-        fotoapparat = Fotoapparat(activity!!, view = cameraView, scaleType = ScaleType.CenterCrop, lensPosition = back(), logger = loggers(
-            logcat()), cameraErrorCallback = { error -> println("Error al grabar: $error") }
-        )
-    }
 
     //Función para parar la cámara.
     override fun onStop() {
         super.onStop()
-        fotoapparat?.stop()
+        fotoapparat.stop()
     }
+
 
     //Función para iniciar la cámara.
     override fun onStart() {
@@ -84,9 +136,15 @@ class FragmentCamera : Fragment() {
             requierePermisos()
         //Si los tiene, se inicia la cámara.
         } else {
-            fotoapparat?.start()
+            fotoapparat.start()
         }
     }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+    }
+
+
 
     //Función que realiza la foto
     private fun hacerFoto(){
@@ -94,8 +152,17 @@ class FragmentCamera : Fragment() {
         if( tienePermisos() ) {
             requierePermisos()
         } else {
-            fotoapparat?.takePicture()?.saveToFile(destino)
+            val foto = fotoapparat.takePicture()
+            // Asynchronously saves photo to file
+            foto.saveToFile(destino)
         }
+    }
+    //Función para cambiar la cámara
+    private fun cambiarCamara(){
+    }
+
+    private fun cambiarFlash(){
+
     }
 
 

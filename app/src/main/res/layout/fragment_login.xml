@@ -15,7 +15,7 @@
         android:layout_marginBottom="201dp"
         android:background="@drawable/borde_layout_login"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/camara"
+        app:layout_constraintBottom_toTopOf="@+id/btnCamera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -142,7 +142,7 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/camara"
+        android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="105dp"

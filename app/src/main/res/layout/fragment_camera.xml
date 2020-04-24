@@ -10,8 +10,7 @@
     <io.fotoapparat.view.CameraView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/fab_camera"/>
+        android:layout_height="match_parent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_camera"
@@ -40,6 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="32dp"
         android:layout_alignParentRight="true"
-        app:backgroundTint="@android:color/white"/>
+        app:backgroundTint="@android:color/white"
+        tools:ignore="RelativeOverlap" />
 
 </RelativeLayout>

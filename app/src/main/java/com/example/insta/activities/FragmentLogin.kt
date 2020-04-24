@@ -1,5 +1,6 @@
 package com.example.insta.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -65,14 +66,17 @@ class FragmentLogin : Fragment() {
             }
         }
 
+        //Botón que provoca el cambio del fragmento login al fragmento registro.
         btnRegistro.setOnClickListener{
             val bundle = bundleOf("hola" to "hola")
             navController.navigate(R.id.action_fragmentLogin_to_fragmentRegister2, bundle)
         }
 
+        //Botón para cambiar el fragmento login al fragmento registro
+        btnCamera.setOnClickListener {
+          navController.navigate(R.id.action_fragmentLogin_to_fragmentCamera)
+        }
 
-        val bundle : Bundle = bundleOf(("prueba" to "prueba"))
-        navController.navigate(R.id.action_fragmentLogin_to_fragmentCamera, bundle)
     }
 
 }
