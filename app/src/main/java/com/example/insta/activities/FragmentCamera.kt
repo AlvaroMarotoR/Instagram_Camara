@@ -1,172 +1,241 @@
 package com.example.insta.activities
 
 import android.Manifest
-import android.app.Activity
+import android.Manifest.permission.CAMERA
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Camera
-import android.net.Uri
+import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.insta.R
-import io.fotoapparat.Fotoapparat
-import io.fotoapparat.configuration.CameraConfiguration
-import io.fotoapparat.configuration.UpdateConfiguration
-import io.fotoapparat.log.fileLogger
-import io.fotoapparat.log.logcat
-import io.fotoapparat.log.loggers
-import io.fotoapparat.parameter.ScaleType
-import io.fotoapparat.selector.back
-import io.fotoapparat.selector.front
-import io.fotoapparat.selector.off
-import io.fotoapparat.selector.torch
-import io.fotoapparat.view.CameraView
-import kotlinx.android.synthetic.main.fragment_camera.*
-import kotlinx.android.synthetic.main.fragment_camera.view.*
-import kotlinx.coroutines.newSingleThreadContext
-import java.io.File
-import java.net.URI
 
+import com.priyankvasa.android.cameraviewex.AspectRatio
+import com.priyankvasa.android.cameraviewex.ErrorLevel
+import com.priyankvasa.android.cameraviewex.Image
+import com.priyankvasa.android.cameraviewex.Modes
+import com.priyankvasa.android.cameraviewex.Modes.Flash.Companion.FLASH_ON
+import com.priyankvasa.android.cameraviewex.VideoSize
+import kotlinx.android.synthetic.main.fragment_camera.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.jetbrains.anko.toast
+import timber.log.Timber
+import java.io.BufferedOutputStream
+import java.io.File
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class FragmentCamera : Fragment() {
+ class FragmentCamera : Fragment(), CoroutineScope {
+    //VARIABLES
+    private val job: Job = SupervisorJob()
 
-    //Array de permisos que pediremos al usuario (cámra, poder guardar y cargar archivos  en el teléfono)
-    val permisos = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    //Directorio de prueba
-    val directorioSD = Environment.getExternalStorageDirectory()
-    //Destino de prueba
-    val destino = File(directorioSD,"hola")
+    override val coroutineContext: CoroutineContext get() = job + Dispatchers.Main
 
-    //VARIABLES QUE SE USAN EN LA LIBRERÍA FOTOAPPARAT
-    //Instanciamos el objeto FotoApparat
-    val fotoapparat =  Fotoapparat(
-        context = context!! ,
-        view = camera_view,                   // view which will draw the camera preview
-        scaleType = ScaleType.CenterCrop,    // (optional) we want the preview to fill the view
-        lensPosition = back(),               // (optional) we want back camera
-        cameraConfiguration = CameraConfiguration(), // (optional) define an advanced configuration
-        logger = loggers(                    // (optional) we want to log camera events in 2 places at once
-            logcat(),                   // ... in logcat
-            fileLogger(requireContext())            // ... and to file
-        ),
-        cameraErrorCallback = { error -> "Error tremendo" }   // (optional) log fatal errors
-    )
+    private val parentDir: String
+            by lazy { "${Environment.getExternalStorageDirectory().absolutePath}/Carpeta_Pruebas" }
+
+    private val imageOutputDirectory: String by lazy { "$parentDir/images".also { File(it).mkdirs() } }
+
+    private val nextImageFile: File
+        get() = File(imageOutputDirectory, "image_${System.currentTimeMillis()}.jpg")
+
+    //private val videoOutputDirectory: String by lazy { "$parentDir/videos".also { File(it).mkdirs() } }
+    private lateinit var videoFile: File
+
+    @SuppressLint("MissingPermission") //Nos permite saltarnos los warnings posibles por falta de permisos.
+    private val imageCaptureListener: View.OnClickListener = View.OnClickListener { camera.capture() }
+
+    @SuppressLint("MissingPermission")
+    private val videoCaptureListener: View.OnClickListener = View.OnClickListener {
+        //Si la cámara está grabando y se da al botón, se para el video.
+        if (camera.isVideoRecording){
+            camera.stopVideoRecording() }
+        //Si en cambio, la cámara está pausada, deberemos de iniciarla.
+        else {
+            camera.startVideoRecording(videoFile){
+                videoFrameRate = 30 //FPS a los que se graba el video.
+                maxDuration = 10000 // Duración máxima del video de 10s.
+                videoStabilization = true //Permitir la estabilización del video.
+                videoSize  = VideoSize.Max
+            }
+
+        }
+    }
+    //Array de Permisos
+    companion object {
+        val TAG: String = FragmentCamera::class.java.run { canonicalName ?: name }
+
+        private val permisosApp: Array<String> = arrayOf(
+            CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        fun newInstance(): FragmentCamera = FragmentCamera()
+    }
 
 
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
 
-    ): View?  {
-        val pruebas = inflater.inflate(R.layout.fragment_camera, container, false);
-        // Inflate the layout for this fragment
-        return pruebas;
-    }
+    ): View? = inflater.inflate(R.layout.fragment_camera, container, false);
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configuraCamara()
+        configuraVista()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        actualizaEstadoVista()
+        //Mediante la función de los permisos.
+        verPermisos().let {
+            if (it.isEmpty()) //Si ese array está vacio, quiere decir que se tienen todos los permisos.
+                camera.start() //Se comienza la cámara
+            else
+                requestPermissions(it, 1) } //En caso de que ese array no este vacio y falte algún permisos, se pide.
+    }
 
+    override fun onPause() {
+        camera.stop()
+        super.onPause()
+    }
 
-        fab_camera.setOnClickListener {
-            hacerFoto()
+    override fun onDestroyView() {
+        //cameraPreviewFrameHandler.release()
+        camera.destroy()
+        job.cancel()
+        super.onDestroyView()
+    }
+
+    private fun configuraCamara(){
+
+        //Con la cámara
+        with(camera){
+            addCameraOpenedListener { Timber.i("Cámara abierta") } //Notificamos que se abre la cámara, al hilo pricipal.
+            //setContinuousFrameListener { cameraPreviewFrameHandler.frameRate } //Callback que notifica que la cámara está abierta en el hilo secundari.
+            addPictureTakenListener { image: Image -> launch {guardarArchivo(image) }}
+            addCameraErrorListener{ t, errorLevel ->
+                when (errorLevel) {
+                    ErrorLevel.Error -> Timber.e(t)
+                    ErrorLevel.ErrorCritical -> Timber.w(t)
+                }
+            }
+
+            /*
+            Aqui irían los Listeners de Abrir y Cerrar la cámara
+             */
+
+            //Creo un listener si la cámara se cierra
+            addCameraClosedListener { Timber.i("Se ha cerrado la cámara.") }
         }
+    }
 
-        fab_switch_camera.setOnClickListener {
-            cambiarCamara()
-        }
+    private fun configuraVista(){
+
+        //FLASH
+        @DrawableRes val flashDrawableId: Int
 
         fab_flash.setOnClickListener {
-            cambiarFlash()
-
-
+            camera.flash = when (camera.flash) {
+                Modes.Flash.FLASH_OFF -> {
+                    Modes.Flash.FLASH_AUTO
+                }
+                Modes.Flash.FLASH_AUTO -> {
+                    FLASH_ON
+                }
+                FLASH_ON -> {
+                    Modes.Flash.FLASH_OFF
+                }
+                else -> return@setOnClickListener
+            }
+            //fab_flash.setImageDrawable(ActivityCompat.getDrawable(context!!,flashDrawableId))
         }
 
+
     }
 
-
-
-
-
-
-    //Función que devuelve booleano, y vemos si el usuario tiene esos permisos o no.
-    private fun tienePermisos() : Boolean {
-        //Igualamos los permisos que pedimos, con los que tiene el teléfono, así devuelve true o false.
-        return ContextCompat.checkSelfPermission(activity!!,
-            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(activity!!,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(activity!!,
-            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-    }
-
-    //Función que nos pide esos permisos, para ello utilizamos el array creado anteriormente.
-    fun requierePermisos(){
-        ActivityCompat.requestPermissions(
-            activity!!,
-             permisos,
-            0
-        )
-    }
-
-
-    //Función para parar la cámara.
-    override fun onStop() {
-        super.onStop()
-        fotoapparat.stop()
-    }
-
-
-    //Función para iniciar la cámara.
-    override fun onStart() {
-        super.onStart()
-
-        //Si no tiene permisos, se los pedimos.
-        if( tienePermisos() ){
-            requierePermisos()
-        //Si los tiene, se inicia la cámara.
-        } else {
-            fotoapparat.start()
+    private fun actualizaEstadoVista(){
+        if (camera.isSingleCaptureModeEnabled){
+            fab_camera.setOnClickListener(imageCaptureListener)
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+
+
+    //FUNCIONES DE LA CÁMARA
+    private fun cambiaCamara(){
+        camera.facing =
+            when (camera.facing) {
+                Modes.Facing.FACING_BACK -> Modes.Facing.FACING_FRONT
+
+            else ->
+                Modes.Facing.FACING_BACK
+        }
     }
 
-
-
-    //Función que realiza la foto
+    //FUNCIÓN PARA REALIZAR FOTOD
     private fun hacerFoto(){
-        //Si no tiene permisos, se le pide al usuario.
-        if( tienePermisos() ) {
-            requierePermisos()
-        } else {
-            val foto = fotoapparat.takePicture()
-            // Asynchronously saves photo to file
-            foto.saveToFile(destino)
+        fab_camera.setOnClickListener(imageCaptureListener)
+    }
+
+
+
+
+
+
+
+    //Función de prueba para guardar las fotos en un archivo nuevp.
+    private suspend fun guardarArchivo(image: Image): File {
+        //Creamos una variable que ns servirá para crar un nuevo archivo
+        val salida: File = nextImageFile.apply { createNewFile() }
+
+        runCatching {
+            withContext(Dispatchers.IO){
+                BufferedOutputStream(salida.outputStream()).use { it.write(image.data) }
+            }
         }
+            .onFailure {
+                context?.toast("No se ha podido guardar la foto.")
+                Timber.e(it)
+            }
+            .onSuccess { context?.toast("Foto guardada en la direccion ${salida.absolutePath}")}
+        return salida
     }
-    //Función para cambiar la cámara
-    private fun cambiarCamara(){
+
+
+
+
+    //Función de Array de Strings (tipo de los permisos)
+    // Finalidad: Igualar los permisos que tiene el teléfono con los que pide la app (mediante .filter) e ir eliminandolos de ese ArrayList.
+    private fun verPermisos(): Array<String> {
+        val context: Context = context?: return permisosApp
+
+        //El método filter permite filtrar los elementos del array (los permisos), mediante
+        //la condición escrita dentro de las llaves, en este caso, los permisos que aun no se hayan dado.
+        return permisosApp
+            .filter { ActivityCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
+            .toTypedArray() //Retorna un array, conteniendo los elementos que pasen el filtro.
     }
-
-    private fun cambiarFlash(){
-
-    }
-
-
-
 
 
 }
