@@ -54,8 +54,10 @@ dependencies {
 
     implementation 'org.jetbrains.anko:anko-common:0.9'
 
-    //Fotoapparat
-    implementation 'io.fotoapparat:fotoapparat:2.7.0'
+    // Implementación de la librería usada para la cámara.
+    implementation "com.priyankvasa.android:cameraview-ex:3.5.5-alpha"
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
 
 
