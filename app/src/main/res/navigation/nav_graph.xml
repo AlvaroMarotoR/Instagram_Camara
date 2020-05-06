@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/fragmentLogin"
-        android:name="com.example.insta.activities.FragmentLogin"
-        android:label="FragmentLogin">
+        android:name="com.example.insta.views.fragments.FragmentLogin"
+        android:label="FragmentLogin" >
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentRegister2"
             app:destination="@id/fragmentRegister"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
-
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            
             />
         <action
             android:id="@+id/action_fragmentLogin_to_fragmentCamera"
@@ -24,12 +24,13 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentRegister"
-        android:name="com.example.insta.activities.FragmentRegister"
+        android:name="com.example.insta.views.fragments.FragmentRegister"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+
+    </fragment>
     <fragment
         android:id="@+id/fragmentCamera"
         android:name="com.example.insta.activities.FragmentCamera"
-        android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        android:label="FragmentCamera" />
 </navigation>

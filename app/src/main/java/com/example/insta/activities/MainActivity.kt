@@ -15,7 +15,6 @@ import com.example.insta.api.MiRetrofitBuilder
 import com.example.insta.models.LoginUser
 import com.example.insta.models.Token
 import kotlinx.android.synthetic.main.fragment_login.*
-import org.jetbrains.anko.doAsync
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

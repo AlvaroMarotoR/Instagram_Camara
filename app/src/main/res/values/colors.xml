@@ -7,4 +7,7 @@
     <color name="azulMasOscuro">#2D64DB</color>
     <color name="azulClaro">#2D9CDB</color>
     <color name="blancoFondo">#EFEFEF</color>
+    <color name="grisClaro">#9F9F9F</color>
+    <color name="errorRed">#FF0000</color>
+    <color name="negro">#000000</color>
 </resources>

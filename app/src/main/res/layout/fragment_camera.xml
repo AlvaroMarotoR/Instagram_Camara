@@ -1,64 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/black"
-    tools:context=".activities.FragmentCamera">
+    android:layout_height="match_parent">
 
+    <!--Make TextureView in Center-->
 
-    <com.priyankvasa.android.cameraviewex.CameraView
-        android:id="@+id/camera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="auto"
-        android:keepScreenOn="true"
-        app:aspectRatio="4:3"
-        app:autoFocus="auto"
-        app:awb="auto"
-        app:cameraMode="single_capture"
-        app:continuousFrameSize="W1440,1080"
-        app:facing="back"
-        app:flash="auto"
-        app:jpegQuality="high"
-        app:noiseReduction="high_quality"
-        app:opticalStabilization="true"
-        app:outputFormat="jpeg"
-        app:pinchToZoom="true"
-        app:shutter="short_time"
-        app:singleCaptureSize="1920,H1080"
-        app:touchToFocus="true"
-        app:zsl="true" />
+    <TextureView
+        android:id="@+id/textureView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_camera"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/capture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
-        android:layout_centerHorizontal="true"
-        app:backgroundTint="@android:color/white"/>
+        android:layout_marginBottom="24dp"
+        android:background="?attr/colorPrimarySurface"
+        android:padding="8dp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_flash"
+        android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
-        app:backgroundTint="@android:color/white"/>
+        android:layout_marginEnd="148dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@id/capture_button"
+        app:layout_constraintEnd_toEndOf="@id/capture_button"
+        app:rippleColor="@color/azulClaro"
+        app:srcCompat="@drawable/giro_camara" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_switch_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
-        android:layout_alignParentRight="true"
-        app:backgroundTint="@android:color/white"
-        tools:ignore="RelativeOverlap" />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

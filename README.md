@@ -1,2 +1,2 @@
-# Proyecto de TFC
-## App Social para Subir Fotos y Chatear
+# Insta
+Instagram-like app developed in Kotlin

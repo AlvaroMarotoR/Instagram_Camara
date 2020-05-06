@@ -1,25 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:background="#FFFF">
+    style="@style/Theme.AppCompat.DayNight.NoActionBar"
+    android:clipToPadding="false">
+
+    <Button
+        android:id="@+id/btnCamera"
+        android:layout_width="282dp"
+        android:layout_height="52dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/boton_con_relleno"
+        android:fontFamily="@font/comfortaa_light"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:text="Abrir Cámara"
+        android:textColor="@color/blancoFondo"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="64dp"
+        tools:layout_editor_absoluteY="610dp" />
 
     <RelativeLayout
+        style="@style/Theme.MaterialComponents.DayNight"
         android:id="@+id/relativeLayout"
         android:layout_width="373dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="201dp"
+        android:layout_height="361dp"
         android:background="@drawable/borde_layout_login"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/btnCamera"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043">
+        app:layout_constraintVertical_bias="0.043"
+        android:gravity="center_horizontal"
+        android:elevation="10dp"
+        android:fadingEdgeLength="10dp">
 
         <TextView
             android:id="@+id/txtlogin"
@@ -39,6 +60,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:autofillHints="@string/email"
             android:id="@+id/txtUsername"
             android:layout_width="282dp"
             android:layout_height="52dp"
@@ -52,10 +74,13 @@
             android:elevation="10dp"
             android:fontFamily="@font/comfortaa_light"
             android:gravity="center"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="-25dp"
             android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
         <EditText
+            android:autofillHints="@string/password"
             android:id="@+id/txtPassword"
             android:layout_width="282dp"
             android:layout_height="52dp"
@@ -68,6 +93,8 @@
             android:background="@drawable/borde_edittext"
             android:fontFamily="@font/comfortaa_light"
             android:gravity="center"
+            android:drawableStart="@drawable/ic_password"
+            android:drawablePadding="-25dp"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
@@ -76,10 +103,10 @@
             android:id="@+id/btnLogin"
             android:layout_width="282dp"
             android:layout_height="52dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginLeft="45dp"
+            android:layout_marginStart="45dp"
             android:layout_marginTop="236dp"
             android:layout_marginEnd="45dp"
             android:background="@drawable/boton_sin_relleno"
@@ -89,10 +116,34 @@
             android:text="@string/login"
             android:textColor="@color/azulClaro" />
 
+        <TextView
+            android:id="@+id/txtEstadoRegistroLogin"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:layout_below="@+id/btnLogin"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/comfortaa_light"
+            android:textSize="12sp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarLogin"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/btnLogin"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="167dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginEnd="166dp"
+            android:foregroundGravity="center"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/relativeLayout2"
         android:layout_width="373dp"
         android:layout_height="166dp"
         android:layout_marginTop="12dp"
@@ -141,15 +192,5 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btnCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="105dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

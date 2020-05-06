@@ -1,241 +1,184 @@
 package com.example.insta.activities
 
-import android.Manifest
-import android.Manifest.permission.CAMERA
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.os.Build
+import android.graphics.Camera
+import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Environment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.DrawableRes
+import android.util.Rational
+import android.util.Size
+import android.view.*
+import android.widget.Toast
+import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.example.insta.R
-
-import com.priyankvasa.android.cameraviewex.AspectRatio
-import com.priyankvasa.android.cameraviewex.ErrorLevel
-import com.priyankvasa.android.cameraviewex.Image
-import com.priyankvasa.android.cameraviewex.Modes
-import com.priyankvasa.android.cameraviewex.Modes.Flash.Companion.FLASH_ON
-import com.priyankvasa.android.cameraviewex.VideoSize
 import kotlinx.android.synthetic.main.fragment_camera.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.anko.toast
-import timber.log.Timber
-import java.io.BufferedOutputStream
 import java.io.File
-import kotlin.coroutines.CoroutineContext
+
+
 
 /**
  * A simple [Fragment] subclass.
  */
- class FragmentCamera : Fragment(), CoroutineScope {
-    //VARIABLES
-    private val job: Job = SupervisorJob()
+class FragmentCamera: Fragment() {
 
-    override val coroutineContext: CoroutineContext get() = job + Dispatchers.Main
-
-    private val parentDir: String
-            by lazy { "${Environment.getExternalStorageDirectory().absolutePath}/Carpeta_Pruebas" }
-
-    private val imageOutputDirectory: String by lazy { "$parentDir/images".also { File(it).mkdirs() } }
-
-    private val nextImageFile: File
-        get() = File(imageOutputDirectory, "image_${System.currentTimeMillis()}.jpg")
-
-    //private val videoOutputDirectory: String by lazy { "$parentDir/videos".also { File(it).mkdirs() } }
-    private lateinit var videoFile: File
-
-    @SuppressLint("MissingPermission") //Nos permite saltarnos los warnings posibles por falta de permisos.
-    private val imageCaptureListener: View.OnClickListener = View.OnClickListener { camera.capture() }
-
-    @SuppressLint("MissingPermission")
-    private val videoCaptureListener: View.OnClickListener = View.OnClickListener {
-        //Si la cámara está grabando y se da al botón, se para el video.
-        if (camera.isVideoRecording){
-            camera.stopVideoRecording() }
-        //Si en cambio, la cámara está pausada, deberemos de iniciarla.
-        else {
-            camera.startVideoRecording(videoFile){
-                videoFrameRate = 30 //FPS a los que se graba el video.
-                maxDuration = 10000 // Duración máxima del video de 10s.
-                videoStabilization = true //Permitir la estabilización del video.
-                videoSize  = VideoSize.Max
-            }
-
-        }
-    }
-    //Array de Permisos
-    companion object {
-        val TAG: String = FragmentCamera::class.java.run { canonicalName ?: name }
-
-        private val permisosApp: Array<String> = arrayOf(
-            CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        fun newInstance(): FragmentCamera = FragmentCamera()
-    }
-
+    private var REQUEST_CODE_PERMISSIONS: Int = 101;
+    private var REQUIRED_PERMISSIONS: Array<String> = arrayOf(CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE)
+    private var lensFacing: CameraX.LensFacing = CameraX.LensFacing.FRONT
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-
-    ): View? = inflater.inflate(R.layout.fragment_camera, container, false);
-
-
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_camera, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configuraCamara()
-        configuraVista()
+
+        if(permisosDados()){
+            capture_button.post{empezarCamara()}
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), REQUIRED_PERMISSIONS , REQUEST_CODE_PERMISSIONS)
+        }
+
+        // Every time the provided texture view changes, recompute layout
+        capture_button.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            updateTransform()
+        }
+
+        capture_button.setOnClickListener{
+            swapCamera()
+        }
+
     }
 
-    override fun onResume() {
-        super.onResume()
-        actualizaEstadoVista()
-        //Mediante la función de los permisos.
-        verPermisos().let {
-            if (it.isEmpty()) //Si ese array está vacio, quiere decir que se tienen todos los permisos.
-                camera.start() //Se comienza la cámara
-            else
-                requestPermissions(it, 1) } //En caso de que ese array no este vacio y falte algún permisos, se pide.
-    }
+    /*
+    FUNCIÓN PARA COMENZAR LA CÁMARA Y QUE SE PUEDA VER LA PREVIA
+     */
+    @SuppressLint("RestrictedApi")
+    private fun empezarCamara(){
+        CameraX.unbindAll()
 
-    override fun onPause() {
-        camera.stop()
-        super.onPause()
-    }
 
-    override fun onDestroyView() {
-        //cameraPreviewFrameHandler.release()
-        camera.destroy()
-        job.cancel()
-        super.onDestroyView()
-    }
+        //CASO PRÁCTICO DE VISTA PREVIA DE LA CÁMARA
+        val previewConfig = PreviewConfig.Builder().apply {
+            setLensFacing(lensFacing) //Se comenzará con la cámara trasera-
+            setTargetAspectRatio(Rational(textureView.width, textureView.height))
+            setTargetResolution(Size(textureView.width, textureView.height))
+        }.build()
 
-    private fun configuraCamara(){
+        val preview = Preview(previewConfig)
 
-        //Con la cámara
-        with(camera){
-            addCameraOpenedListener { Timber.i("Cámara abierta") } //Notificamos que se abre la cámara, al hilo pricipal.
-            //setContinuousFrameListener { cameraPreviewFrameHandler.frameRate } //Callback que notifica que la cámara está abierta en el hilo secundari.
-            addPictureTakenListener { image: Image -> launch {guardarArchivo(image) }}
-            addCameraErrorListener{ t, errorLevel ->
-                when (errorLevel) {
-                    ErrorLevel.Error -> Timber.e(t)
-                    ErrorLevel.ErrorCritical -> Timber.w(t)
+        // Every time the viewfinder is updated, recompute layout
+        preview.setOnPreviewOutputUpdateListener {
+            // To update the SurfaceTexture, we have to remove it and re-add it
+            val parent = textureView.parent as ViewGroup
+            parent.removeView(textureView)
+            parent.addView(textureView , 0)
+            textureView.surfaceTexture = it.surfaceTexture
+            updateTransform()
+        }
+
+
+        //CASO PRÁCTICO DE TOMA DE FOTOS
+        val imageCaptureConfig = ImageCaptureConfig.Builder().apply{
+            setLensFacing(lensFacing)
+            setTargetAspectRatio(Rational(textureView.width, textureView.height))
+            setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY) //Modo de captura en máxima calidad.
+        }.build()
+
+         val imageCapture = ImageCapture(imageCaptureConfig)
+
+        capture_button.setOnClickListener {
+
+            val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),"${System.currentTimeMillis()}.jpg")
+            imageCapture.takePicture(file,object :ImageCapture.OnImageSavedListener{ //Méetodo proporcionado por el uso del caso práctico de ImageCapture
+                override fun onImageSaved(file: File) {
+                    Toast.makeText(requireContext(), "Foto guardada en: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            /*
-            Aqui irían los Listeners de Abrir y Cerrar la cámara
-             */
-
-            //Creo un listener si la cámara se cierra
-            addCameraClosedListener { Timber.i("Se ha cerrado la cámara.") }
-        }
-    }
-
-    private fun configuraVista(){
-
-        //FLASH
-        @DrawableRes val flashDrawableId: Int
-
-        fab_flash.setOnClickListener {
-            camera.flash = when (camera.flash) {
-                Modes.Flash.FLASH_OFF -> {
-                    Modes.Flash.FLASH_AUTO
+                override fun onError(useCaseError: ImageCapture.UseCaseError, message: String, cause: Throwable?) {
+                   Toast.makeText(requireContext(), "Error al guardar la foto.", Toast.LENGTH_SHORT).show()
+                    cause?.printStackTrace()
                 }
-                Modes.Flash.FLASH_AUTO -> {
-                    FLASH_ON
-                }
-                FLASH_ON -> {
-                    Modes.Flash.FLASH_OFF
-                }
-                else -> return@setOnClickListener
+            })
+        }
+        CameraX.bindToLifecycle(this,preview,imageCapture) /* For Preview and image Capture */
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun swapCamera(){
+        lensFacing =
+            when (lensFacing) {
+            CameraX.LensFacing.BACK -> CameraX.LensFacing.FRONT
+            CameraX.LensFacing.FRONT -> CameraX.LensFacing.BACK
+
+                else -> CameraX.LensFacing.BACK
+        }
+        CameraX.getCameraWithLensFacing(lensFacing)
+        empezarCamara()
+    }
+
+
+    private fun updateTransform() {
+        val matrix = Matrix()
+        // Compute the center of the view finder
+        val centerX =textureView.getMeasuredWidth()/2f
+        val centerY =textureView.getMeasuredHeight()/2f
+
+        // Correct preview output to account for display rotation
+        val rotationDegree: Int;
+        val rotation: Int = textureView.getRotation().toInt()
+
+            when(rotation){
+            Surface.ROTATION_0 -> rotationDegree = 0
+            Surface.ROTATION_90 -> rotationDegree = 90
+            Surface.ROTATION_180 -> rotationDegree = 180
+            Surface.ROTATION_270 -> rotationDegree = 270
+            else -> return
+        }
+        matrix.postRotate(rotationDegree.toFloat(),centerX,centerY)
+
+        // Finally, apply transformations to our TextureView
+        textureView.setTransform(matrix)
+    }
+
+    /*
+    Si los permisos están dados, comienza la cámara, si no, se informa al usuario.
+     */
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if(requestCode == REQUEST_CODE_PERMISSIONS) {
+            if ( permisosDados() ) {
+                textureView.post{ empezarCamara() }
+            } else {
+                Toast.makeText(requireContext(), "No se han otorgado los permisos suficientes.", Toast.LENGTH_SHORT).show()
+                //finish()
             }
-            //fab_flash.setImageDrawable(ActivityCompat.getDrawable(context!!,flashDrawableId))
-        }
-
-
-    }
-
-    private fun actualizaEstadoVista(){
-        if (camera.isSingleCaptureModeEnabled){
-            fab_camera.setOnClickListener(imageCaptureListener)
         }
     }
 
 
-
-    //FUNCIONES DE LA CÁMARA
-    private fun cambiaCamara(){
-        camera.facing =
-            when (camera.facing) {
-                Modes.Facing.FACING_BACK -> Modes.Facing.FACING_FRONT
-
-            else ->
-                Modes.Facing.FACING_BACK
-        }
-    }
-
-    //FUNCIÓN PARA REALIZAR FOTOD
-    private fun hacerFoto(){
-        fab_camera.setOnClickListener(imageCaptureListener)
-    }
-
-
-
-
-
-
-
-    //Función de prueba para guardar las fotos en un archivo nuevp.
-    private suspend fun guardarArchivo(image: Image): File {
-        //Creamos una variable que ns servirá para crar un nuevo archivo
-        val salida: File = nextImageFile.apply { createNewFile() }
-
-        runCatching {
-            withContext(Dispatchers.IO){
-                BufferedOutputStream(salida.outputStream()).use { it.write(image.data) }
+    /*
+    Si los permisos están dados o no
+     */
+    private fun permisosDados(): Boolean {
+        for (permisos: String in REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(requireContext(), permisos) != PackageManager.PERMISSION_GRANTED) {
+                return false
             }
         }
-            .onFailure {
-                context?.toast("No se ha podido guardar la foto.")
-                Timber.e(it)
-            }
-            .onSuccess { context?.toast("Foto guardada en la direccion ${salida.absolutePath}")}
-        return salida
+        return true
     }
-
-
-
-
-    //Función de Array de Strings (tipo de los permisos)
-    // Finalidad: Igualar los permisos que tiene el teléfono con los que pide la app (mediante .filter) e ir eliminandolos de ese ArrayList.
-    private fun verPermisos(): Array<String> {
-        val context: Context = context?: return permisosApp
-
-        //El método filter permite filtrar los elementos del array (los permisos), mediante
-        //la condición escrita dentro de las llaves, en este caso, los permisos que aun no se hayan dado.
-        return permisosApp
-            .filter { ActivityCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED }
-            .toTypedArray() //Retorna un array, conteniendo los elementos que pasen el filtro.
-    }
-
-
 }
+
+
+
+
+

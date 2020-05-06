@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flash</string>
+    <string name="app_name">Insta</string>
     <!-- TITULO-->
     <string name="titulo">flash</string>
 
@@ -9,6 +9,7 @@
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
     <string name="txtLoginRegistrar">Crear cuenta</string>
+    <string name="txtEstadoSuccess">Usuario registrado correctamente</string>
 
     <!-- REGISTRO-->
     <string name="txtEmail">Email</string>
@@ -22,12 +23,54 @@
     <string name="txtTelefono">Telefono</string>
     <string name="txtImagen">Imagen</string>
     <string name="txtGenero">Género</string>
+    <string name="registerSuccess">Registro completado</string>
 
     <string-array name="genres_array">
         <item>Masculino</item>
         <item>Femenino</item>
         <item>Otro</item>
     </string-array>
+
+    <!--MENU-->
+    <string name="menu_home">Inicio</string>
+    <string name="menu_explore">Explorar</string>
+    <string name="menu_add">Añadir</string>
+    <string name="menu_recent">Reciente</string>
+    <string name="menu_profile">Perfil</string>
+    <string name="menu_camera">Cámara</string>
+    <string name="menu_camera_description">Abrir Cámara</string>
+    <string name="menu_mensaje">Mensaje</string>
+    <string name="menu_mensaje_description">Abrir Mensajes</string>
+
+    <!--PUBLICACION_LISTITEM-->
+    <string name="strUsernameHeaderPublicacion">username</string>
+    <string name="strLocalizacionPublicacion">localizacion</string>
+    <string name="strUsernameBodyPublicacion">username</string>
+    <string name="strDescripcionImagePublicacion">Imagen usuario</string>
+
+
+    <!-- ERRORES -->
+    <string name="errorCamposRellenos">Rellene todos los campos</string>
+    <string name="errorPhoneNumber">Compruebe el formato del teléfono</string>
+    <string name="errorCampoEmail">El formato del email no es correcto</string>
+    <string name="errorPasswordMatch">Las contraseñas deben coincidir</string>
+    <string name="errorServerConnect">Error al conectar con el servidor</string>
+    <string name="errorLoginCredentials">No se puede iniciar sesión con los datos proporcionados</string>
+    <string name="errorConnectServer">Error al conectar con el servidor</string>
+    <string name="errorEmailRepetido">Email existente</string>
+    <string name="errorUsernameRepetido">Usuario existente</string>
+    <string name="errorUsernameYEmailRepetido">Email y Usuario existentes</string>
+    <string name="errorEmailFormat">Compruebe el formato del email</string>
+
+
+    <!-- Dialogs -->
+    <string name="dialogTitleSure">¿Estás seguro?</string>
+    <string name="dialogOptionYes">Sí</string>
+    <string name="dialogOptionNo">No</string>
+    <string name="dialogTxtDeletePhoto">¿Eliminar foto?</string>
+
+
+    <!--- CÁMARA -->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

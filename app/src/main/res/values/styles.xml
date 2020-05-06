@@ -1,17 +1,16 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/azulOscuro</item>
-        <item name="colorPrimaryDark">@color/azulMasOscuro</item>
+        <item name="colorPrimaryDark">@color/azulClaro</item>
         <item name="colorAccent">@color/azulClaro</item>
     </style>
 
-    <style name="flash">
-        <item name="android:textSize">48sp</item>
-        <item name="android:letterSpacing">-0.01</item>
-        <item name="android:textColor">#000000</item>
+    <style name="MiAppBar" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="android:fontFamily">@font/comfortaa_light</item>
+        <item name="android:textSize">25sp</item>
     </style>
 
 </resources>

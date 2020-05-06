@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/azulOscuro</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/azulClaro</item>
+    </style>
+
+    <style name="MiAppBar" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="android:fontFamily">@font/comfortaa_light</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+</resources>

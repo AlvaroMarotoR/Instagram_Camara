@@ -54,7 +54,15 @@ data class User(
 
     @Expose
     @SerializedName("n_seguidos")
-    val n_seguidos: Int
+    val n_seguidos: Int,
+
+    @Expose
+    @SerializedName("seguidos")
+    val seguidos: ArrayList<UserFollow>,
+
+    @Expose
+    @SerializedName("seguidores")
+    val seguidores: ArrayList<UserFollow>
 
 ) {
 }

@@ -18,7 +18,6 @@ import com.example.insta.api.MiRetrofitBuilder
 import com.example.insta.models.LoginUser
 import com.example.insta.models.Token
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_login.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -72,9 +71,9 @@ class FragmentLogin : Fragment() {
             navController.navigate(R.id.action_fragmentLogin_to_fragmentRegister2, bundle)
         }
 
-        //Botón para cambiar el fragmento login al fragmento registro
-        btnCamera.setOnClickListener {
-          navController.navigate(R.id.action_fragmentLogin_to_fragmentCamera)
+
+        btnCamera.setOnClickListener{
+            navController.navigate(R.id.action_fragmentLogin_to_fragmentCamera)
         }
 
     }

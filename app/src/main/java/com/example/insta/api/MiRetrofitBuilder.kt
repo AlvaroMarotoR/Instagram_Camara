@@ -6,19 +6,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object MiRetrofitBuilder{
 
-    const val IP = "192.168.1.42"
-    const val PUERTO = "8000"
-    const val BASE_URL = "http://192.168.1.42:8000"
+    private const val IP = "192.168.1.44"
+    private const val PUERTO = "8000"
+    private const val BASE_URL = "http://$IP:$PUERTO"
 
-    val retrofitBuilder: Retrofit.Builder by lazy {
-    Log.d("DEBUG", "ENE L APICONSTRUCTOR")
+    private val retrofitBuilder: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
     }
 
     val apiService:ApiService by lazy{
-        Log.d("DEBUG", "ENE L APISDAERVIO")
         retrofitBuilder
             .build()
             .create(ApiService::class.java)

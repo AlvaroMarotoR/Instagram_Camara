@@ -5,20 +5,42 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFF">
+        android:layout_gravity="center_horizontal">
 
     <Button
         android:id="@+id/btnRegistroRegister"
         android:layout_width="282dp"
         android:layout_height="52dp"
         android:layout_marginBottom="40dp"
-        android:background="@drawable/boton_con_relleno"
         android:text="@string/register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        android:background="@drawable/boton_sin_relleno"
+        android:fontFamily="@font/comfortaa_light"
+        android:textColor="@color/azulClaro"
+        />
 
+    <TextView
+        android:id="@+id/txtErrorRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistroRegister"
+        android:textColor="@color/errorRed"
+        android:fontFamily="@font/comfortaa_light"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarRegister"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="-20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegistroRegister"
+        android:visibility="invisible"/>
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -52,6 +74,48 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+            <RelativeLayout
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+            >
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imagenRegister"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/txtImagen"
+                    app:civ_border_color="#7A7A7A"
+                    app:civ_border_overlay="true"
+                    app:civ_border_width="0.2dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/icono_add_photo_register"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:background="@drawable/ic_add_circle_black_24dp"
+                    />
+
+                <ImageView
+                    android:id="@+id/icono_remove_photo_register"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginBottom="85dp"
+                    android:background="@drawable/ic_remove_circle"
+                    android:visibility="invisible" />
+            </RelativeLayout>
             <EditText
                 android:id="@+id/txtEmailRegister"
                 android:layout_width="282dp"
@@ -62,9 +126,54 @@
                 android:background="@drawable/borde_edittext"
                 android:elevation="10dp"
                 android:fontFamily="@font/comfortaa_light"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="-25dp"
                 android:gravity="center"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                />
+
+            <RelativeLayout
+                android:layout_width="329dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="22dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="20dp">
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/spinnerTelefono"
+                    android:layout_width="126dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="0dp"
+                    android:background="@drawable/borde_edittext"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    app:ccpDialog_textColor="@color/grisClaro"
+                    app:ccp_contentColor="@color/grisClaro"
+                    app:ccp_flagBorderColor="@color/blancoFondo"
+                    android:gravity="center"
+                    android:prompt="@string/txtTelefono"
+                    app:ccp_autoDetectCountry="true"
+                    app:ccp_autoDetectLanguage="true"/>
+
+                <EditText
+                    android:id="@+id/txtTelefonoRegister"
+                    android:layout_width="208dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="0dp"
+                    android:background="@drawable/borde_edittext"
+                    android:drawableStart="@drawable/ic_telefono"
+                    android:drawablePadding="-25dp"
+                    android:elevation="10dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:gravity="center"
+                    android:hint="@string/txtTelefono"
+                    android:inputType="phone" />
+
+            </RelativeLayout>
+
 
             <EditText
                 android:id="@+id/txtUsernameRegister"
@@ -76,6 +185,8 @@
                 android:background="@drawable/borde_edittext"
                 android:elevation="10dp"
                 android:fontFamily="@font/comfortaa_light"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="-25dp"
                 android:gravity="center"
                 android:hint="@string/txtUsername"
                 android:inputType="textPersonName" />
@@ -90,6 +201,8 @@
                 android:background="@drawable/borde_edittext"
                 android:elevation="10dp"
                 android:fontFamily="@font/comfortaa_light"
+                android:drawableStart="@drawable/ic_user_linea"
+                android:drawablePadding="-25dp"
                 android:gravity="center"
                 android:hint="@string/txtNombre"
                 android:inputType="textPersonName" />
@@ -104,6 +217,8 @@
                 android:background="@drawable/borde_edittext"
                 android:elevation="10dp"
                 android:fontFamily="@font/comfortaa_light"
+                android:drawableStart="@drawable/ic_user_linea"
+                android:drawablePadding="-15dp"
                 android:gravity="center"
                 android:hint="@string/txtApellido1"
                 android:inputType="textPersonName" />
@@ -118,23 +233,43 @@
                 android:background="@drawable/borde_edittext"
                 android:elevation="10dp"
                 android:fontFamily="@font/comfortaa_light"
+                android:drawableStart="@drawable/ic_user_linea"
+                android:drawablePadding="-15dp"
                 android:gravity="center"
                 android:hint="@string/txtApellido2"
                 android:inputType="textPersonName" />
 
-            <DatePicker
-                android:id="@+id/txtFechaRegister"
+            <RelativeLayout
                 android:layout_width="282dp"
                 android:layout_height="150dp"
                 android:layout_marginStart="45dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="45dp"
                 android:background="@drawable/borde_edittext"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:elevation="10dp"
-                android:gravity="center"
-                android:spinnersShown="true" />
+                >
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="63dp"
+                    android:background="@drawable/ic_calendar"
+                    android:gravity="center_vertical" />
+
+                <DatePicker
+                    android:id="@+id/txtFechaRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:calendarTextColor="#F40707"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
+                    android:elevation="10dp"
+                    android:gravity="center"
+                    android:spinnersShown="true"
+                    android:yearListSelectorColor="#FFFFFF" />
+            </RelativeLayout>
+
+
 
             <RelativeLayout
                 android:layout_width="282dp"
@@ -148,6 +283,8 @@
                     android:layout_width="141dp"
                     android:layout_height="match_parent"
                     android:fontFamily="@font/comfortaa_light"
+                    android:drawableStart="@drawable/ic_genero"
+                    android:drawablePadding="0dp"
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="@string/txtGenero"
@@ -198,7 +335,9 @@
                     android:background="@drawable/borde_edittext"
                     android:elevation="10dp"
                     android:fontFamily="@font/comfortaa_light"
-                    android:gravity="center_vertical"
+                    android:drawableStart="@drawable/ic_password"
+                    android:drawablePadding="-20dp"
+                    android:gravity="center"
                     android:hint="@string/txtPassword"
                     android:inputType="textPassword"
                     android:paddingStart="10sp"
@@ -229,7 +368,9 @@
                     android:background="@drawable/borde_edittext"
                     android:elevation="10dp"
                     android:fontFamily="@font/comfortaa_light"
-                    android:gravity="center_vertical"
+                    android:drawableStart="@drawable/ic_password"
+                    android:drawablePadding="-20dp"
+                    android:gravity="center"
                     android:hint="@string/txtPassword2"
                     android:inputType="textPassword"
                     android:paddingStart="10sp"
