@@ -42,7 +42,7 @@ class FragmentCamera: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if(permisosDados()){
-            capture_button.post{empezarCamara()}
+            empezarCamara()
         } else {
             ActivityCompat.requestPermissions(requireActivity(), REQUIRED_PERMISSIONS , REQUEST_CODE_PERMISSIONS)
         }
@@ -52,11 +52,9 @@ class FragmentCamera: Fragment() {
             updateTransform()
         }
 
-        capture_button.setOnClickListener{
-            swapCamera()
-        }
-
+        btnCamera.setOnClickListener{swapCamera()}
     }
+
 
     /*
     FUNCIÓN PARA COMENZAR LA CÁMARA Y QUE SE PUEDA VER LA PREVIA
@@ -64,8 +62,6 @@ class FragmentCamera: Fragment() {
     @SuppressLint("RestrictedApi")
     private fun empezarCamara(){
         CameraX.unbindAll()
-
-
         //CASO PRÁCTICO DE VISTA PREVIA DE LA CÁMARA
         val previewConfig = PreviewConfig.Builder().apply {
             setLensFacing(lensFacing) //Se comenzará con la cámara trasera-
@@ -90,7 +86,7 @@ class FragmentCamera: Fragment() {
         val imageCaptureConfig = ImageCaptureConfig.Builder().apply{
             setLensFacing(lensFacing)
             setTargetAspectRatio(Rational(textureView.width, textureView.height))
-            setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY) //Modo de captura en máxima calidad.
+            setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY) //Modo de captura en máxima calidad.
         }.build()
 
          val imageCapture = ImageCapture(imageCaptureConfig)
@@ -111,6 +107,7 @@ class FragmentCamera: Fragment() {
         }
         CameraX.bindToLifecycle(this,preview,imageCapture) /* For Preview and image Capture */
     }
+
 
     @SuppressLint("RestrictedApi")
     private fun swapCamera(){
