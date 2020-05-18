@@ -8,7 +8,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.insta.views.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_fragmentCamera3"
+            app:destination="@id/fragmentCamera3" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.insta.views.fragments.ProfileFragment"
@@ -29,4 +33,17 @@
         android:name="com.example.insta.views.fragments.AddFragment"
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" />
+    <fragment
+        android:id="@+id/fragmentCamera3"
+        android:name="com.example.insta.activities.FragmentCamera"
+        android:label="FragmentCamera" >
+        <action
+            android:id="@+id/action_fragmentCamera3_to_fragmentCamera22"
+            app:destination="@id/fragmentCamera22" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentCamera22"
+        android:name="com.example.insta.activities.FragmentCamera2"
+        android:label="fragment_camera2"
+        tools:layout="@layout/fragment_camera2" />
 </navigation>

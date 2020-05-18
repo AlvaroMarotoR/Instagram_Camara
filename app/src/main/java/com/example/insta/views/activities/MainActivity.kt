@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(){
             //bottomNavigationView.itemIconTintList = null
 
         }else{
-            setContentView(R.layout.activity_main)
+            setContentView(R.layout.activity_logged)
         }
     }
 

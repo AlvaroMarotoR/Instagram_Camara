@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -15,6 +16,7 @@ import com.example.insta.models.MeGusta
 import com.example.insta.models.Publicacion
 import com.example.insta.recyclerview.PublicacionAdapter
 import com.example.insta.recyclerview.PublicacionItem
+import com.example.insta.utils.MiNavController
 import com.example.insta.utils.MiViewUtils
 import com.example.insta.views.activities.MainActivity
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -38,8 +40,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        MiNavController.findNavController(view)
         topAppBarHome.setNavigationOnClickListener {
             MiViewUtils.showToast("diste al tate", requireContext())
+            MiNavController.navigate(R.id.action_homeFragment_to_fragmentCamera3)
         }
         topAppBarHome.setOnMenuItemClickListener{
             when(it.itemId){
