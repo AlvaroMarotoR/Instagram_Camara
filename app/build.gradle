@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.insta"
-        minSdkVersion 26
+        minSdkVersion 25
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -65,7 +65,8 @@ dependencies {
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     //dependencia del selector de numero de telefono
     implementation 'com.hbb20:ccp:2.3.8'
-
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     //CÁMARA
     implementation 'androidx.appcompat:appcompat:1.2.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

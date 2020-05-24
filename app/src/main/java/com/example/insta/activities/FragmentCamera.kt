@@ -48,7 +48,7 @@ import java.util.concurrent.Executor
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
@@ -64,7 +64,7 @@ import java.util.concurrent.Executor
             this.requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        // Every time the provided texture view changes, recompute layout
+
         capture_button.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform()
         }
@@ -91,9 +91,8 @@ import java.util.concurrent.Executor
 
         val preview = Preview(previewConfig)
 
-        // Every time the viewfinder is updated, recompute layout
+
         preview.setOnPreviewOutputUpdateListener {
-            // To update the SurfaceTexture, we have to remove it and re-add it
             val parent = textureView.parent as ViewGroup
             parent.removeView(textureView)
             parent.addView(textureView, 0)
@@ -116,12 +115,12 @@ import java.util.concurrent.Executor
         btnFlash.setOnClickListener {
 
 
-            if ((imageCapture.getFlashMode().equals(FlashMode.OFF))) {
-                imageCapture.setFlashMode(FlashMode.ON)
+            if ((imageCapture.flashMode == FlashMode.OFF)) {
+                imageCapture.flashMode = FlashMode.ON
                 btnFlash.setBackgroundResource(R.drawable.flash_encendido)
 
             } else {
-                imageCapture.setFlashMode(FlashMode.OFF)
+                imageCapture.flashMode = FlashMode.OFF
                 btnFlash.setBackgroundResource(R.drawable.flash_apagado)
             }
 
@@ -152,7 +151,8 @@ import java.util.concurrent.Executor
                         bundle.putString("face", lensFacing.toString())
 
 
-                        frg.setArguments(bundle)
+
+                        frg.arguments = bundle
 
                         navController.navigate(R.id.action_fragmentCamera3_to_fragmentCamera22, bundle)
 
